@@ -6,6 +6,7 @@ require("./src/db/init");
 
 const authRoutes = require("./src/routes/authRoutes");
 const propertyRoutes = require("./src/routes/propertyRoutes");
+const favouriteRoutes = require("./src/routes/favouriteRoutes");
 
 // App Initialization
 const app = express();
@@ -14,9 +15,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/properties", propertyRoutes);
+app.use("/api/favourites", favouriteRoutes);
 
 // Simple root route to check API status
 app.get("/", (req, res) => {
