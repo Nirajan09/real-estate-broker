@@ -5,6 +5,7 @@ require("dotenv").config();
 require("./src/db/init"); 
 
 const authRoutes = require("./src/routes/authRoutes");
+const propertyRoutes = require("./src/routes/propertyRoutes");
 
 // App Initialization
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/properties", propertyRoutes);
 
 // Simple root route to check API status
 app.get("/", (req, res) => {
