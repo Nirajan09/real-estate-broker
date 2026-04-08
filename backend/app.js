@@ -1,17 +1,27 @@
+// Imports & Config
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
-require("./src/db/init");
+require("dotenv").config(); 
+require("./src/db/init"); 
 
+const authRoutes = require("./src/routes/authRoutes");
+
+// App Initialization
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Routes
+app.use("/api/auth", authRoutes);
+
+// Simple root route to check API status
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+// Server Start
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
