@@ -3,6 +3,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 
 function App() {
@@ -30,10 +31,13 @@ function App() {
           }
         />
 
+        {/* Protected */}
         <Route
           path="/dashboard"
           element={
+            <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
           }
         />
       </Routes>

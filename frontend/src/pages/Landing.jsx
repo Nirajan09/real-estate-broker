@@ -30,13 +30,6 @@ const Landing = () => {
           Register
         </Link>
 
-        {/* Continue as Guest */}
-        <Link
-          to="/dashboard"
-          className="bg-(--color-primary-dark) text-(--color-accent-light) font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-(--color-primary) transition-colors"
-        >
-          Continue as Guest
-        </Link>
       </div>
     </div>
   );
