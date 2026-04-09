@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Use environment variable for baseURL
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
 });
 
 // Attach token automatically to every request
