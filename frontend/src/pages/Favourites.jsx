@@ -2,108 +2,109 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import api from "../api/axios";
+import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 
 export default function Favourites() {
-  const [favourites, setFavourites] = useState([]);
-  const [loadingFav, setLoadingFav] = useState(false);
-  const [loadingData, setLoadingData] = useState(true);
-  const navigate = useNavigate();
+    const [favourites, setFavourites] = useState([]);
+    const [loadingFav, setLoadingFav] = useState(false);
+    const [loadingData, setLoadingData] = useState(true);
+    const navigate=useNavigate()
+    useEffect(() => {
+        const fetchFavourites = async () => {
+            try {
+                setLoadingData(true);
+                const res = await api.get("/favourites");
+                setFavourites(res.data.favourites);
+            } catch (err) {
+                console.error(err);
+                toast.error("Failed to load favourites");
+            } finally {
+                setLoadingData(false);
+            }
+        };
+        fetchFavourites();
+    }, []);
 
-  useEffect(() => {
-    const fetchFavourites = async () => {
-      try {
-        setLoadingData(true);
-        const res = await api.get("/favourites");
-        setFavourites(res.data.favourites);
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load favourites");
-      } finally {
-        setLoadingData(false);
-      }
+    const toggleFavourite = async (propertyId) => {
+        try {
+            setLoadingFav(true);
+            await api.delete(`/favourites/${propertyId}`);
+            toast.info("Removed from favourites!");
+            const res = await api.get("/favourites");
+            setFavourites(res.data.favourites);
+        } catch (err) {
+            console.error(err);
+            toast.error("Something went wrong!");
+        } finally {
+            setLoadingFav(false);
+        }
     };
-    fetchFavourites();
-  }, []);
 
-  const toggleFavourite = async (propertyId) => {
-    try {
-      setLoadingFav(true);
-      await api.delete(`/favourites/${propertyId}`);
-      toast.info("Removed from favourites!");
-      const res = await api.get("/favourites");
-      setFavourites(res.data.favourites);
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong!");
-    } finally {
-      setLoadingFav(false);
-    }
-  };
+    // Skeleton Card
+    const SkeletonCard = () => (
+        <div className="bg-(--color-accent-light) p-5 rounded-2xl shadow-lg animate-pulse">
+            <div className="h-5 bg-gray-300 rounded w-3/4 mb-3"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/3 mb-4"></div>
+            <div className="h-10 bg-gray-300 rounded-lg"></div>
+        </div>
+    );
 
-  // Skeleton Card
-  const SkeletonCard = () => (
-  <div className="bg-(--color-accent-light) p-5 rounded-2xl shadow-lg animate-pulse">
-    <div className="h-5 bg-gray-300 rounded w-3/4 mb-3"></div>
-    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-    <div className="h-4 bg-gray-300 rounded w-1/3 mb-4"></div>
-    <div className="h-10 bg-gray-300 rounded-lg"></div>
-  </div>
-);
+    return (
+        <div className="min-h-screen bg-linear-to-r from-(--color-primary-dark) to-(--color-primary) p-6">
+            <ToastContainer position="top-right" />
 
-  return (
-    <div className="min-h-screen bg-linear-to-r from-(--color-primary-dark) to-(--color-primary) p-6">
-      <ToastContainer position="top-right" />
+            <div className="max-w-7xl mx-auto">
+                <Header showFavourites={true} favourites={favourites} />
 
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl font-bold text-white mb-6">My Favourites ❤️</h2>
+                {/* Skeleton while loading */}
+                {loadingData ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        {Array.from({ length: 6 }).map((_, idx) => (
+                            <SkeletonCard key={idx} />
+                        ))}
+                    </div>
+                ) : favourites.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        {favourites.map((fav) => (
+                            <div
+                                key={fav.id}
+                                className="bg-(--color-accent-light) p-5 rounded-2xl shadow-lg hover:scale-[1.03] hover:shadow-2xl transition-all duration-300"
+                            >
+                                <h3 className="text-lg font-bold text-(--color-primary-dark)">
+                                    {fav.title}
+                                </h3>
+                                <p className="text-sm text-gray-500 mt-1">{fav.location}</p>
+                                <p className="text-(--color-primary) font-semibold mt-2">
+                                    Rs. {fav.price}
+                                </p>
 
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="mb-6 px-5 py-2 rounded-lg bg-(--color-primary-dark) text-white hover:bg-(--color-primary) transition shadow-md border border-black/20"
-        >
-          Back to Dashboard
-        </button>
+                                <button
+                                    onClick={() => toggleFavourite(fav.id)}
+                                    disabled={loadingFav}
+                                    className="mt-4 w-full py-2 rounded-lg text-white bg-red-500 hover:bg-red-600 transition"
+                                >
+                                    {loadingFav ? "Processing..." : "Remove Favourite"}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center mt-10 text-white">
+                        <p className="mb-4">
+                            You haven't added any favourites yet.
+                        </p>
 
-        {/* Skeleton while loading */}
-        {loadingData ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, idx) => (
-              <SkeletonCard key={idx} />
-            ))}
-          </div>
-        ) : favourites.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {favourites.map((fav) => (
-              <div
-                key={fav.id}
-                className="bg-(--color-accent-light) p-5 rounded-2xl shadow-lg hover:scale-[1.03] hover:shadow-2xl transition-all duration-300"
-              >
-                <h3 className="text-lg font-bold text-(--color-primary-dark)">
-                  {fav.title}
-                </h3>
-                <p className="text-sm text-gray-500 mt-1">{fav.location}</p>
-                <p className="text-(--color-primary) font-semibold mt-2">
-                  Rs. {fav.price}
-                </p>
-
-                <button
-                  onClick={() => toggleFavourite(fav.id)}
-                  disabled={loadingFav}
-                  className="mt-4 w-full py-2 rounded-lg text-white bg-red-500 hover:bg-red-600 transition"
-                >
-                  Remove Favourite
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-white/80 text-center mt-10">
-            You have not added any favourites yet.
-            Explore properties and tap the heart to save your favourites!
-          </p>
-        )}
-      </div>
-    </div>
-  );
+                        <button
+                            onClick={() => navigate("/dashboard")}
+                            className="relative bg-(--color-primary-dark) text-white px-5 py-2 rounded-lg hover:bg-(--color-primary) transition shadow-md"
+                        >
+                            Explore Properties
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 }
