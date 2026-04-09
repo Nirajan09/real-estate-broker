@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import Favourites from "./pages/Favourites";
 
 function App() {
   return (
@@ -37,6 +38,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/favourites"
+          element={
+            <ProtectedRoute>
+              <Favourites />
             </ProtectedRoute>
           }
         />
