@@ -1,5 +1,4 @@
 const db = require("./db");
-
 db.serialize(() => {
   // USERS TABLE
   db.run(`
@@ -40,7 +39,16 @@ db.serialize(() => {
         INSERT INTO properties (title, location, price) VALUES
         ('Luxury Apartment', 'Kathmandu', 120000),
         ('Cozy House', 'Pokhara', 80000),
-        ('Modern Flat', 'Lalitpur', 100000)
+        ('Modern Flat', 'Lalitpur', 100000),
+        ('Studio Room', 'Bhaktapur', 50000),
+        ('Villa with Garden', 'Chitwan', 150000),
+        ('Budget Room', 'Biratnagar', 30000),
+        ('Penthouse Suite', 'Kathmandu', 200000),
+        ('Family House', 'Butwal', 90000),
+        ('Lake View Apartment', 'Pokhara', 130000),
+        ('Downtown Flat', 'Lalitpur', 95000),
+        ('Minimalist Studio', 'Dharan', 60000),
+        ('Luxury Villa', 'Hetauda', 170000)
       `);
       console.log("Seeded properties data");
     }
