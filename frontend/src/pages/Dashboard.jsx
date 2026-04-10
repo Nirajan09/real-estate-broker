@@ -50,7 +50,9 @@ export default function Dashboard() {
       setFavourites(favRes.data.favourites);
     } catch (err) {
       console.error(err);
-      toast.error("Something went wrong!");
+      if (err.response?.status !== 401) {
+        toast.error("Failed to load data");
+      }
     } finally {
       setLoadingFav(false);
     }
@@ -69,7 +71,7 @@ export default function Dashboard() {
 
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <Header showFavourites={false} favourites={favourites}/>
+        <Header showFavourites={false} favourites={favourites} />
 
         {/* Properties */}
         <div>
@@ -110,8 +112,8 @@ export default function Dashboard() {
                     onClick={() => toggleFavourite(p.id)}
                     disabled={isFavourite(p.id) || loadingFav}
                     className={`mt-4 w-full py-2 rounded-lg text-white transition ${isFavourite(p.id)
-                        ? "bg-green-500 cursor-not-allowed"
-                        : "bg-(--color-primary-dark) hover:bg-(--color-primary)"
+                      ? "bg-green-500 cursor-not-allowed"
+                      : "bg-(--color-primary-dark) hover:bg-(--color-primary)"
                       }`}
                   >
                     {isFavourite(p.id)

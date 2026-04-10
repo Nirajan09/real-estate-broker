@@ -9,7 +9,7 @@ export default function Favourites() {
     const [favourites, setFavourites] = useState([]);
     const [loadingFav, setLoadingFav] = useState(false);
     const [loadingData, setLoadingData] = useState(true);
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     useEffect(() => {
         const fetchFavourites = async () => {
             try {
@@ -18,7 +18,9 @@ export default function Favourites() {
                 setFavourites(res.data.favourites);
             } catch (err) {
                 console.error(err);
-                toast.error("Failed to load favourites");
+                if (err.response?.status !== 401) {
+                    toast.error("Failed to load favourites");
+                }
             } finally {
                 setLoadingData(false);
             }
