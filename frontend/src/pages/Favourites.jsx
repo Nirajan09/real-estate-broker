@@ -4,11 +4,13 @@ import "react-toastify/dist/ReactToastify.css";
 import api from "../api/axios";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
+import LogoutModal from "../components/LogoutModal";
 
 export default function Favourites() {
     const [favourites, setFavourites] = useState([]);
     const [loadingFav, setLoadingFav] = useState(false);
     const [loadingData, setLoadingData] = useState(true);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
     const navigate = useNavigate()
     useEffect(() => {
         const fetchFavourites = async () => {
@@ -53,12 +55,19 @@ export default function Favourites() {
         </div>
     );
 
+    // Logout
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
+    };
+
     return (
         <div className="min-h-screen bg-linear-to-r from-(--color-primary-dark) to-(--color-primary) p-6">
             <ToastContainer position="top-right" />
 
             <div className="max-w-7xl mx-auto">
-                <Header showFavourites={true} favourites={favourites} />
+                <Header showFavourites={true} favourites={favourites} setShowLogoutModal={setShowLogoutModal} />
 
                 {/* Skeleton while loading */}
                 {loadingData ? (
@@ -107,6 +116,12 @@ export default function Favourites() {
                     </div>
                 )}
             </div>
+            {/* Logout Modal */}
+            <LogoutModal
+                show={showLogoutModal}
+                onClose={() => setShowLogoutModal(false)}
+                onConfirm={handleLogout}
+            />
         </div>
     );
 }

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const Header = ({ showFavourites = false, favourites = [] }) => {
+const Header = ({ showFavourites = false, favourites = [],setShowLogoutModal }) => {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("user"));
     return (
